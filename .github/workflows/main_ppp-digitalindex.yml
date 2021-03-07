@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -32,4 +31,4 @@ jobs:
       with:
         app-name: 'ppp-digitalindex'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_be17d806faf84ea09af670d9cb689472 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_d00b0afcaa5246f496e5f3a46a0d4cdd }}
