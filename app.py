@@ -8,6 +8,8 @@ import dash_html_components as html
 
 print("Python Initiated")
 
+TIMEOUT = 3
+
 data_folder='data'
 input_filename = 'ppp.csv'
 currency_file_name = 'currency.csv'
@@ -15,26 +17,23 @@ currency_file_name = 'currency.csv'
 ppp = pd.read_csv(os.path.join(data_folder,input_filename))
 currency = pd.read_csv(os.path.join(data_folder,currency_file_name))
 
-def get_category_list():
-    for item in ["(All)"] + list(ppp['category'].unique()):
-        yield item
+category_list_base = ["(All)"] + list(ppp['category'].unique())
+base_list_base = list(ppp['base'].unique())
 
-def get_base_list():
-    for item in list(ppp['base'].unique()):
-        yield item
 
 def get_product_list(category):
     if category == "(All)":
         product_list = list(ppp['product'].unique())
     else:
         product_list = list(ppp[ppp['category']==category]['product'].unique())
-    for item in ["(All)"] + product_list:
-        yield item
+    return ["(All)"] + product_list
+
+product_list_base = get_product_list("(All)")
 
 
-base_list = [{'label':"Base Currency: "+y,'value':y} for y in get_base_list()]
-category_list = [{'label':"Category: "+y,'value':y} for y in get_category_list()]
-product_list = [{'label': "Product: "+y, 'value':y} for y in get_product_list("(All)")]
+base_list = [{'label':"Base Currency: "+y,'value':y} for y in base_list_base]
+category_list = [{'label':"Category: "+y,'value':y} for y in category_list_base]
+product_list = [{'label': "Product: "+y, 'value':y} for y in product_list_base]
 
 colors = dict(background='#f1f6f9', text1='#14274e', text2='#394867', border='#9ba4b4')
 
@@ -58,13 +57,6 @@ category_selector = dcc.Dropdown(
         clearable=False
     )
 
-#product_selector = dcc.Dropdown(
-#        id='product_selection',
-#        options=product_list,
-#        value='(All)',
-#        clearable=False
-#    )
-
 app.layout = html.Div([
     
     html.Div(children=[
@@ -83,7 +75,8 @@ app.layout = html.Div([
     dash.dependencies.Output('product_selection', 'value'),
     [dash.dependencies.Input('category_selection', 'value')])
 def update_product_list(category):
-    return [{'label': "Product: "+y, 'value':y} for y in get_product_list(category)], "(All)"
+    product_list_dynamic = get_product_list(category)
+    return [{'label': "Product: "+y, 'value':y} for y in product_list_dynamic], "(All)"
 
 
 @app.callback(
