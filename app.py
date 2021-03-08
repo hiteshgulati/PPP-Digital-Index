@@ -130,6 +130,6 @@ def get_figure (base,category,product):
 server = app.server
 
 if __name__ == '__main__':
-    server.run(host="0.0.0.0", port=8080,debug=True)
+    server.run(host="0.0.0.0", debug=True)
     # app.run_server(debug=False)
 
